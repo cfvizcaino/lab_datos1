@@ -10,8 +10,10 @@ import java.util.Scanner;
 
 public class Lab_datos1 {
 
-    public static void Ordenar(Scanner sc, String file_name) {
-        int cedulaMayor;
+    public static void Ordenar(Scanner sc, String file_name, int cont) {
+        int cedulaMin = 999999999;
+        int cedulat;
+        String cedulaMin2;
 
         try {
             File originalFile = new File(file_name + ".txt");
@@ -22,15 +24,27 @@ public class Lab_datos1 {
 
             String cedula;
             cedula = register_cedula.readLine();
-            
-            while (cedula != null) {
-                cedula = register_cedula.readLine();
+
+            for (int i = 0; i < cont; i++) {
+                while (cedula != null) {
+                    cedulat = Integer.parseInt(cedula);
+                    cedula = register_cedula.readLine();
+                    if (cedulat < cedulaMin) {
+                        cedulaMin = cedulat;
+                    }
+                    
+                    cedulaMin2 = String.valueOf(cedulaMin);
+                    
+                    if (!cedulaMin2.isEmpty()) {
+                        register_temp.println(cedulaMin2 + "\t");
+                    }
+                }
+                cedula = null;
             }
-            
+
             register_cedula.close();
             register_temp.close();
-            
-            
+
         } catch (IOException ex) {
             ex.getStackTrace();
             System.out.println("No se encontró el archivo");
@@ -38,7 +52,98 @@ public class Lab_datos1 {
 
     }
 
-    public static void Llenar(Scanner in, String file_name) {
+    public static void Llenar_Productos(Scanner in, String file_name) {
+        String codigo, descripcion, precio;
+        try {
+            FileWriter outFile = new FileWriter(file_name + ".txt", false);
+            PrintWriter register = new PrintWriter(outFile);
+            String hayProducto;
+            System.out.println("Hay Producto, si o no");
+            hayProducto = in.nextLine();
+            while (hayProducto.equalsIgnoreCase("si")) {
+                System.out.println("Digite el codigo del producto");
+                codigo = in.nextLine();
+                while (codigo.length() > 10) {
+                    System.out.println("Codigo invalido");
+                    System.out.println("Digite el codigo del producto");
+                    codigo = in.nextLine();
+                }
+                System.out.println("Digite la descripción");
+                descripcion = in.nextLine();
+                while (descripcion.length() > 100) {
+                    System.out.println("Descripción muy larga, recuerde que son menos de 100 caracteres");
+                    System.out.println("Digite la descripción");
+                    descripcion = in.nextLine();
+                }
+                System.out.println("Digite el precio");
+                precio = in.nextLine();
+                while (precio.length() > 10) {
+                    System.out.println("Precio invalido");
+                    System.out.println("Digite el precio");
+                    precio = in.nextLine();
+                }
+                if (!codigo.isEmpty() && !descripcion.isEmpty() && !precio.isEmpty()) {
+                    register.println(codigo + "\t" + descripcion + "\t" + precio);
+                }
+            }
+            register.close();
+        } catch (IOException ex) {
+            ex.getStackTrace();
+        }
+
+    }
+
+    public static void Llenar_Facturas(Scanner in, String file_name) {
+        String cedulaF, numFactura, codProducto, cantidad;
+        try {
+            FileWriter outFile = new FileWriter(file_name + ".txt", false);
+            PrintWriter register = new PrintWriter(outFile);
+            String hayFactura;
+            System.out.println("Hay factura, si o no");
+            hayFactura = in.nextLine();
+            while (hayFactura.equalsIgnoreCase("si")) {
+                System.out.println("Digite la cedula indicada en la factura");
+                cedulaF = in.nextLine();
+                while (cedulaF.length() > 10) {
+                    System.out.println("Cedula invalida");
+                    System.out.println("Digite la cedula indicada en la factura");
+                    cedulaF = in.nextLine();
+                }
+                System.out.println("Digite el numero de la factura");
+                numFactura = in.nextLine();
+                while (numFactura.length() > 10) {
+                    System.out.println("Factura invalida");
+                    System.out.println("Digite el numero de la factura");
+                    numFactura = in.nextLine();
+                }
+                System.out.println("Digite el codigo del producto");
+                codProducto = in.nextLine();
+                while (codProducto.length() > 10) {
+                    System.out.println("Codigo invalido");
+                    System.out.println("Digite el codigo del producto");
+                    codProducto = in.nextLine();
+                }
+                System.out.println("Digite la cantidad del producto");
+                cantidad = in.nextLine();
+                while (cantidad.length() > 5) {
+                    System.out.println("Cantidad invalida");
+                    System.out.println("Digite la cantidad del producto");
+                    cantidad = in.nextLine();
+                }
+
+                if (!cedulaF.isEmpty() && !numFactura.isEmpty() && !codProducto.isEmpty() && !cantidad.isEmpty()) {
+                    register.println(cedulaF + "\t" + numFactura + "\t" + codProducto
+                            + "\t" + cantidad);
+                }
+            }
+            register.close();
+        } catch (IOException ex) {
+            ex.getStackTrace();
+
+        }
+    }
+
+    public static void Llenar_Clientes(Scanner in, String file_name, int cont) {
         String id, name, dir, tel, email;
 
         try {
@@ -55,6 +160,7 @@ public class Lab_datos1 {
             }
             while (hay_clientes == 1) {
                 System.out.println("Cédula");
+                cont++;
                 id = in.nextLine();
                 System.out.println("Nombre");
                 name = in.nextLine();
@@ -83,10 +189,11 @@ public class Lab_datos1 {
     }
 
     public static void main(String[] args) {
+        int cont = 0;
         Scanner in = new Scanner(System.in);
         String file_name = in.nextLine();
-        Llenar(in, file_name);
+        Llenar_Clientes(in, file_name, cont);
         in.close();
-        Ordenar(in, file_name);
+        Ordenar(in, file_name, cont);
     }
 }

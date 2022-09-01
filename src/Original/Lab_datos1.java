@@ -10,8 +10,70 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Vector;
 
 public class Lab_datos1 {
+
+    public static void Ordenar(Scanner sc, String file_name, int cont) {
+        Llenar_Clientes(sc, file_name, cont);
+        cont = sc.nextInt();
+        boolean hay = false;
+        int tempo[] = new int[cont];
+        System.out.println(cont);
+        int cont2 = 0;
+        while (hay == false) {
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(file_name + ".txt"));
+                String line = null;
+
+                while ((line = br.readLine()) != null) {
+                    String temp[] = line.split("\t");
+                    // String temp[] ={1,2,3,4}
+                    System.out.println(temp[0] + "," + temp[1] + "," + temp[2]);
+                    int temporal = Integer.parseInt(temp[0]);
+                    if (cont2 < cont) {
+                        tempo[cont2] = temporal;
+                        cont2++;
+                    }
+                }
+                for (int i = 0; i < tempo.length - 1; i++) {
+                    for (int j = 0; j < tempo.length - 1; j++) {
+                        if (tempo[j] > tempo[j + 1]) {
+                            int tmp = tempo[j + 1];
+                            tempo[j + 1] = tempo[j];
+                            tempo[j] = tmp;
+                        }
+                    }
+                }
+                for (int i = 0; i < tempo.length; i++) {
+                    System.out.println("Aca se escribirá el vector en orden");
+                    System.out.println(tempo[i]);
+
+                }
+                br.close();
+                FileWriter ClientesOrg = new FileWriter("ClientesOrg.txt", false);
+                PrintWriter register = new PrintWriter(ClientesOrg);
+                BufferedReader BR = new BufferedReader(new FileReader(file_name + ".txt"));
+                String lines = null;
+                String registers= null;
+                
+                while ((lines = BR.readLine()) != null) {
+                    for (int i = 0; i < tempo.length; i++) {
+                        if (lines.contains(String.valueOf(tempo[i]))) {
+                            register.write(lines); // PREGUNTAR A RACEDO
+                        }
+                    }
+                }
+                hay = true;
+            } catch (IOException ex) {
+                System.out.println("No se encontro archivo");
+                hay = false;
+                file_name = sc.nextLine(); // Archivo
+            }
+        }
+
+    }
+
     public static void Llenar_Productos(Scanner in, String file_name) {
         String codigo, descripcion, precio;
         try {
@@ -55,6 +117,7 @@ public class Lab_datos1 {
 
     public static void Llenar_Facturas(Scanner in, String file_name) {
         String cedulaF, numFactura, codProducto, cantidad;
+
         try {
             FileWriter outFile = new FileWriter(file_name + ".txt", false);
             PrintWriter register = new PrintWriter(outFile);
@@ -97,18 +160,16 @@ public class Lab_datos1 {
                 }
             }
             register.close();
+
         } catch (IOException ex) {
             ex.getStackTrace();
 
         }
     }
 
-    public static void Llenar_Clientes(Scanner in, String file_name) {
+    public static void Llenar_Clientes(Scanner in, String file_name, int cont) {
         String id, name, dir, tel, email;
-        int cedulaMin = 999999999;
-        String cedulaMin2 = null;
-        int cont = 0;
-        List<Integer> listaId = new ArrayList<>();
+        List clientes = new Vector();
 
         try {
             FileWriter outFile = new FileWriter(file_name + ".txt", false);
@@ -125,9 +186,6 @@ public class Lab_datos1 {
             while (hay_clientes == 1) {
                 System.out.println("Cédula");
                 id = in.nextLine();
-                int idT= Integer.parseInt(id);
-                listaId.add(idT);
-                cont++;
                 System.out.println("Nombre");
                 name = in.nextLine();
                 System.out.println("Dirección");
@@ -140,43 +198,15 @@ public class Lab_datos1 {
                 if (!id.isEmpty() && !name.isEmpty() && !dir.isEmpty() && !tel.isEmpty() && !email.isEmpty()) {
                     register.println(id + "\t" + name + "\t" + dir
                             + "\t" + tel + "\t" + email);
+                    cont++;
                 }
+
                 System.out.println("Hay clientes? 1 = si, 2 = no");
                 hay_clientes = Integer.parseInt(in.nextLine());
+
             }
             register.close();
-            
-            File originalFile = new File(file_name + ".txt");
-            BufferedReader register_cedula = new BufferedReader(new FileReader(originalFile));
-            
-            BufferedReader registerNew = new BufferedReader(new FileReader(originalFile));
-
-            File temp = new File("temp_file.txt");
-            PrintWriter register_temp = new PrintWriter(new FileWriter(temp));
-            String cedular = null;
-            cedular = register_cedula.readLine();
-            System.out.println(cedular);
-            Collections.sort(listaId);
-            System.out.println(listaId);
-            for (int i = 0; i< listaId.size(); i++) {
-                int cedulaT = listaId.get(i);
-                register_temp.println(cedulaT + "\t");
-            }
-            
-            // para comparar necesitamo convertir cada objeto del array list a string ya que es lo unico que contiene el metod contains
-            String register_t = register_temp.toString();
-            for (int i = 0; i< listaId.size(); i++) {
-                int cedulaT = listaId.get(i);
-                String cedula_T= String.valueOf(cedulaT);
-                if (register_t.contains(cedula_T)){
-                    System.out.println("Si");
-                }
-                // pasar al siguiente registro y volver a convertir a string 
-            }
-            
-
-            register_cedula.close();
-            register_temp.close();
+            System.out.println(cont);
 
         } catch (IOException ex) {
             ex.getStackTrace();
@@ -184,13 +214,10 @@ public class Lab_datos1 {
     }
 
     public static void main(String[] args) {
-        int cont = 0;
-        String cedula = null;
         Scanner in = new Scanner(System.in);
-        System.out.println("Escriba el nombre del archivo");
+        int cont = 0;
         String file_name = in.nextLine();
-        Llenar_Clientes(in, file_name);
-        //Ordenar(in, file_name);
+        Ordenar(in, file_name, cont);
         in.close();
     }
 }

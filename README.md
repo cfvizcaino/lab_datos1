@@ -1,4 +1,4 @@
-# lab_datos1
+# lab_datos1, Jose David Gómez, Cristian Felipe Vizcaíno
 
 ## El proyecto está en el master branch, el punto 1
 

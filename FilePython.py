@@ -1,7 +1,5 @@
 from encodings import utf_8
-from re import S
 from timeit import default_timer
-from tkinter import W
 
 """
 Se importan la libreria necesaria para que los caracteres especiales del archivo puedan ser leidos por el programa,

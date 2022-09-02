@@ -1,0 +1,16 @@
+<meta charset="UTF-8">
+
+
+<script>
+
+let fs = require("fs")
+
+fs.readfile("file_agro.txt", {encoding: "utf-8"}, function(error, file){
+    if(error){
+        console.log(`Error: ${error}`)
+    }else{
+        console.log("Datos leidos:")
+        console.log(file)
+    }
+})
+</script>
